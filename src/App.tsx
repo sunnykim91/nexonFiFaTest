@@ -1,15 +1,18 @@
-import React, { useEffect } from "react";
+import React, { createContext } from "react";
 import "./App.css";
-import { Grid } from "@mui/material";
-import NEXONAPI from "./NEXONAPI";
 import HomePage from "./HomePage/HomPage";
 import { Routes, Route } from "react-router-dom";
+import MatchRecordPage from "./MatchRecordPage/MatchRecordPage";
+import { RootProvider } from "./RootContext";
 
 function App() {
     return (
-        <Routes>
-            <Route path="/" element={<HomePage />} />
-        </Routes>
+        <RootProvider>
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/:username" element={<MatchRecordPage />} />
+            </Routes>
+        </RootProvider>
     );
 }
 

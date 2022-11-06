@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { Button, Grid, Input, Typography } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -6,98 +6,89 @@ import NEXONAPI from "../NEXONAPI";
 import { MatchType } from "../model/MatchType";
 import moment from "moment";
 import { MatchInfo } from "../model/MatchDetail";
+import BackGroundIMG from "../assets/background.jpg";
+import { useNavigate } from "react-router-dom";
+import { RootContext } from "../RootContext";
 
 function HomePage() {
-    const [username, setUserName] = React.useState<string>("");
-    const [matchType, setMatchType] = React.useState<string>("30");
-    const [matchTypeList, setMatchTypeList] = React.useState<MatchType[]>([]);
-    const [matchDetailList, setMatchDetailList] = React.useState<MatchInfo[]>(
-        []
-    );
+    const {
+        username,
+        matchType,
+        setName,
+        fetchMatchTypes,
+        setMatchInfoList,
+        fetchUserMatchInfo,
+    } = useContext(RootContext);
 
     useEffect(() => {
-        fetchData();
+        fetchMatchTypes();
     }, []);
 
-    const fetchData = async () => {
-        try {
-            const res = await NEXONAPI.fetchMatchTypes();
-            console.log(res);
-            setMatchTypeList(res);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
     const handleChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserName(e.target.value);
+        setName(e.target.value);
     };
 
     const handleClickSearch = async () => {
-        try {
-            const res1 = await NEXONAPI.fetchUserInfo(username);
-            let accessId = res1.accessId;
-            const res2 = await NEXONAPI.fetchMatchRecord(
-                accessId,
-                Number(matchType),
-                { limit: 5 }
-            );
-            let tempList: any = [];
-            for (let i = 0; i < res2.length; i++) {
-                let matchInfo = await NEXONAPI.fetchMatchRecordDetail(res2[i]);
-                console.log(matchInfo);
-                tempList.push(matchInfo);
-            }
-            setMatchDetailList(tempList);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const handleChangeSelect = (event: SelectChangeEvent) => {
-        setMatchType(event.target.value as string);
+        fetchUserMatchInfo();
     };
 
     return (
-        <Grid>
-            <Input
-                placeholder="유저 닉네임을 입력하세요"
-                value={username}
-                onChange={handleChangeNickname}
-            />
-            <Button variant="contained" onClick={handleClickSearch}>
-                검색
-            </Button>
-            <Grid>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={matchType}
-                    label="matchType"
-                    onChange={handleChangeSelect}
+        <>
+            <Grid
+                container
+                height={"100%"}
+                textAlign={"center"}
+                style={{ padding: "20px", color: "#005391" }}
+            >
+                <Typography variant="h3">NEXON</Typography>
+                <Grid
+                    container
+                    alignItems={"center"}
+                    gap={2}
+                    style={{
+                        marginTop: "100px",
+                    }}
                 >
-                    {matchTypeList?.map((type: MatchType) => {
-                        return (
-                            <MenuItem
-                                key={type.matchtype}
-                                value={type.matchtype}
-                            >
-                                {type.desc}
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
+                    <Typography variant="subtitle1">구단주명</Typography>
+                    <Input
+                        placeholder="구단주 이름을 입력해주세요"
+                        value={username}
+                        onChange={handleChangeNickname}
+                        style={{ minWidth: "240px" }}
+                    />
+                    <Button variant="contained" onClick={handleClickSearch}>
+                        검색
+                    </Button>
+                </Grid>
+
+                <Grid
+                    style={{
+                        position: "absolute",
+                        bottom: 10,
+                        color: "#005391",
+                    }}
+                    textAlign={"left"}
+                >
+                    <Typography variant="subtitle2">
+                        DATA based on NEXON Developers
+                    </Typography>
+                    <Typography variant="subtitle2">by sunnyKim91</Typography>
+                </Grid>
             </Grid>
-            <Grid>
-                {matchDetailList?.map((li: MatchInfo) => {
-                    return (
-                        <Typography key={li.matchId}>
-                            {moment(li.matchDate).format("YYYY-MM-DD HH:mm:ss")}
-                        </Typography>
-                    );
-                })}
-            </Grid>
-        </Grid>
+
+            <img
+                src={BackGroundIMG}
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    zIndex: -1,
+                    width: "100%",
+                    height: "100%",
+                }}
+                alt="backgroundImg"
+            />
+        </>
     );
 }
 
