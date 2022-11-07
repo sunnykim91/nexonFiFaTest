@@ -1,3 +1,35 @@
+export interface PlayerType {
+    spId: number;
+    spPosition: number;
+    spGrade: number;
+    desc?: string;
+    name?: string;
+    status: {
+        shoot: number;
+        effectiveShoot: number;
+        assist: number;
+        goal: number;
+        dribble: number;
+        intercept: number;
+        defending: number;
+        passTry: number;
+        passSuccess: number;
+        dribbleTry: number;
+        dribbleSuccess: number;
+        ballPossesionTry: number;
+        ballPossesionSuccess: number;
+        aerialTry: number;
+        aerialSuccess: number;
+        blockTry: number;
+        block: number;
+        tackleTry: number;
+        tackle: number;
+        yellowCards: number;
+        redCards: number;
+        spRating: number;
+    };
+}
+
 export interface MatchInfoDetail {
     accessId: string;
     nickname: string;
@@ -76,37 +108,7 @@ export interface MatchInfoDetail {
         tackleTry: number;
         tackleSuccess: number;
     };
-    player: [
-        {
-            spId: number;
-            spPosition: number;
-            spGrade: number;
-            status: {
-                shoot: number;
-                effectiveShoot: number;
-                assist: number;
-                goal: number;
-                dribble: number;
-                intercept: number;
-                defending: number;
-                passTry: number;
-                passSuccess: number;
-                dribbleTry: number;
-                dribbleSuccess: number;
-                ballPossesionTry: number;
-                ballPossesionSuccess: number;
-                aerialTry: number;
-                aerialSuccess: number;
-                blockTry: number;
-                block: number;
-                tackleTry: number;
-                tackle: number;
-                yellowCards: number;
-                redCards: number;
-                spRating: number;
-            };
-        }
-    ];
+    player: PlayerType[];
 }
 
 export interface MatchInfo {

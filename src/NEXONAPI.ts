@@ -19,6 +19,40 @@ class NEXONAPI {
             });
     }
 
+    static async fetchSpId() {
+        const url =
+            "https://static.api.nexon.co.kr/fifaonline4/latest/spid.json";
+        const key = NEXONAPIKEY;
+
+        return axios
+            .get(url, {
+                headers: {
+                    Authorization: key,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
+
+    static async fetchSpPosition() {
+        const url =
+            "https://static.api.nexon.co.kr/fifaonline4/latest/spposition.json";
+        const key = NEXONAPIKEY;
+
+        return axios
+            .get(url, {
+                headers: {
+                    Authorization: key,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
+
     static async fetchUserInfo(nickname: string) {
         const url = `https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname=${nickname}`;
         const key = NEXONAPIKEY;
