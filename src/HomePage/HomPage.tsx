@@ -19,6 +19,7 @@ function HomePage() {
         setMatchInfoList,
         fetchSpId,
         fetchSpPosition,
+        fetchDivision,
         fetchUserMatchInfo,
     } = useContext(RootContext);
 
@@ -26,6 +27,7 @@ function HomePage() {
         fetchMatchTypes();
         fetchSpId();
         fetchSpPosition();
+        fetchDivision();
     }, []);
 
     const handleChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {

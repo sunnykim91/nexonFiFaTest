@@ -1,10 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import { Box, Grid, Typography } from "@mui/material";
-import { tableCellClasses } from "@mui/material/TableCell";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
-import { styled } from "@mui/material/styles";
+import { Grid, Typography } from "@mui/material";
 import { RootContext } from "../../RootContext";
 import { MatchType } from "../../model/MatchType";
 import TabPanel from "@mui/lab/TabPanel";
@@ -14,11 +9,9 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import moment from "moment";
-import ListItemText from "@mui/material/ListItemText";
-import { CircularProgress } from "@mui/material";
-import { SPID } from "../../model/SPID";
 import PlayerDetailInfo from "./PlayerDetailInfo";
 import MatchInfoDetail from "./MatchInfoDetail";
+import UserInfo from "./UserInfo";
 
 function MatchRecordPageContent() {
     const {
@@ -87,6 +80,7 @@ function MatchRecordPageContent() {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Grid container gap={1}>
+                                            <UserInfo matchInfo={li} />
                                             <MatchInfoDetail matchInfo={li} />
                                             <PlayerDetailInfo matchInfo={li} />
                                         </Grid>

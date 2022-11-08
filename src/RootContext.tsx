@@ -5,10 +5,14 @@ import NEXONAPI from "./NEXONAPI";
 import { useNavigate } from "react-router-dom";
 import { SPID } from "./model/SPID";
 import { SpPositionType } from "./model/SpPositionType";
+import { UserInfo } from "./model/UserInfo";
+import { MaxDivision } from "./model/MaxDivision";
+import { DivisionData } from "./model/DivisionData";
 
 const RootContext = createContext({
     username: "",
     matchType: "",
+    userInfo: {} as UserInfo,
     spIdList: [] as SPID[],
     spPositionList: [] as SpPositionType[],
     isLoading: false,
@@ -17,6 +21,7 @@ const RootContext = createContext({
     fetchMatchTypes: () => {},
     fetchSpId: () => {},
     fetchSpPosition: () => {},
+    fetchDivision: () => {},
     fetchUserMatchInfo: () => {},
     fetchMatchInfoByType: (matchType: string) => {},
     setType: (matchType: string) => {},
@@ -33,9 +38,15 @@ const RootProvider = ({ children }: Props): JSX.Element => {
     const [isLoading, setIsLoading] = useState(false);
     const [accessId, setAccessId] = useState("");
     const [username, setUserName] = useState<string>("");
+    const [userInfo, setUserInfo] = useState<UserInfo>({
+        accessId: "",
+        level: 0,
+        nickname: "",
+    });
     const [matchType, setMatchType] = useState<string>("30");
     const [spIdList, setSpIdList] = useState<SPID[]>([]);
     const [spPositionList, setSpPositionList] = useState<SpPositionType[]>([]);
+    const [divisionList, setDivisionList] = useState<DivisionData[]>([]);
     const [matchTypeList, setMatchTypeList] = useState<MatchType[]>([]);
     const [matchDetailList, setMatchDetailList] = useState<MatchInfo[]>([]);
 
@@ -68,19 +79,46 @@ const RootProvider = ({ children }: Props): JSX.Element => {
         }
     };
 
+    const fetchDivision = async () => {
+        try {
+            const res = await NEXONAPI.fetchDivision();
+            console.log(res);
+            setDivisionList(res);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     const fetchUserMatchInfo = async () => {
         try {
-            const res1 = await NEXONAPI.fetchUserInfo(username);
-            let accessId = res1.accessId;
+            const userRes = await NEXONAPI.fetchUserInfo(username);
+            let accessId = userRes.accessId;
             setAccessId(accessId);
-            const res2 = await NEXONAPI.fetchMatchRecord(
+
+            const divRes = await NEXONAPI.fetchUserDivision(accessId);
+
+            divRes.sort((a: MaxDivision, b: MaxDivision) =>
+                a.matchType === 50 ? -1 : 0
+            );
+
+            divisionList.map((divi: DivisionData) => {
+                if (divRes[0].division === divi.divisionId) {
+                    userRes.divisionName = divi.divisionName;
+                    userRes.achievementDate = divRes[0].achievementDate;
+                }
+            });
+
+            setUserInfo(userRes);
+            const recordRes = await NEXONAPI.fetchMatchRecord(
                 accessId,
                 Number(matchType),
                 { limit: 10 }
             );
             let tempList: any = [];
-            for (let i = 0; i < res2.length; i++) {
-                let matchInfo = await NEXONAPI.fetchMatchRecordDetail(res2[i]);
+            for (let i = 0; i < recordRes.length; i++) {
+                let matchInfo = await NEXONAPI.fetchMatchRecordDetail(
+                    recordRes[i]
+                );
                 console.log(matchInfo);
 
                 tempList.push(matchInfo);
@@ -97,14 +135,16 @@ const RootProvider = ({ children }: Props): JSX.Element => {
     const fetchMatchInfoByType = async (matchType: string) => {
         try {
             setIsLoading(true);
-            const res2 = await NEXONAPI.fetchMatchRecord(
+            const recordRes = await NEXONAPI.fetchMatchRecord(
                 accessId,
                 Number(matchType),
                 { limit: 10 }
             );
             let tempList: any = [];
-            for (let i = 0; i < res2.length; i++) {
-                let matchInfo = await NEXONAPI.fetchMatchRecordDetail(res2[i]);
+            for (let i = 0; i < recordRes.length; i++) {
+                let matchInfo = await NEXONAPI.fetchMatchRecordDetail(
+                    recordRes[i]
+                );
                 console.log(matchInfo);
                 matchInfo.matchInfo.sort((a: any, b: any) => {
                     return a.nickname === username ? -1 : 0;
@@ -192,12 +232,14 @@ const RootProvider = ({ children }: Props): JSX.Element => {
                 spIdList,
                 spPositionList,
                 matchType,
+                userInfo,
                 isLoading,
                 matchTypeList,
                 matchDetailList,
                 fetchSpId,
                 fetchMatchTypes,
                 fetchSpPosition,
+                fetchDivision,
                 fetchUserMatchInfo,
                 fetchMatchInfoByType,
                 setName,

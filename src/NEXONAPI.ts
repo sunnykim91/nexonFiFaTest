@@ -53,6 +53,39 @@ class NEXONAPI {
             });
     }
 
+    static async fetchDivision() {
+        const url =
+            "https://static.api.nexon.co.kr/fifaonline4/latest/division.json";
+        const key = NEXONAPIKEY;
+
+        return axios
+            .get(url, {
+                headers: {
+                    Authorization: key,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
+
+    static async fetchUserDivision(accessId: string) {
+        const url = `https://api.nexon.co.kr/fifaonline4/v1.0/users/${accessId}/maxdivision`;
+        const key = NEXONAPIKEY;
+
+        return axios
+            .get(url, {
+                headers: {
+                    Authorization: key,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((res) => {
+                return res.data;
+            });
+    }
+
     static async fetchUserInfo(nickname: string) {
         const url = `https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname=${nickname}`;
         const key = NEXONAPIKEY;
