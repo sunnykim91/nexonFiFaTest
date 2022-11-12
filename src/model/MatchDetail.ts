@@ -30,6 +30,24 @@ export interface PlayerType {
     };
 }
 
+export interface ShootDetail {
+    goalTime: number;
+    x: number;
+    y: number;
+    type: number;
+    result: number;
+    spId: number;
+    spGrade: number;
+    spLevel: number;
+    spIdType: boolean;
+    assist: boolean;
+    assistSpId: number;
+    assistX: number;
+    assistY: number;
+    hitPost: boolean;
+    inPenalty: boolean;
+}
+
 export interface MatchInfoDetail {
     accessId: string;
     nickname: string;
@@ -67,25 +85,7 @@ export interface MatchInfoDetail {
         shootPenaltyKick: number;
         goalPenaltyKick: number;
     };
-    shootDetail: [
-        {
-            goalTime: number;
-            x: number;
-            y: number;
-            type: number;
-            result: number;
-            spId: number;
-            spGrade: number;
-            spLevel: number;
-            spIdType: boolean;
-            assist: boolean;
-            assistSpId: number;
-            assistX: number;
-            assistY: number;
-            hitPost: boolean;
-            inPenalty: boolean;
-        }
-    ];
+    shootDetail: ShootDetail[];
     pass: {
         passTry: number;
         passSuccess: number;

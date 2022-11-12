@@ -1,6 +1,5 @@
-import React, { useEffect, useContext } from "react";
-import { Grid, Paper, Typography, Box } from "@mui/material";
-import { MatchInfo, PlayerType } from "../../model/MatchDetail";
+import { Grid, Paper } from "@mui/material";
+import { MatchInfo } from "../../model/MatchDetail";
 
 interface Props {
     matchInfo: MatchInfo;
@@ -11,7 +10,7 @@ function MatchInfoDetail(props: Props) {
     return (
         <Grid>
             <Paper
-                sx={{ padding: "10px", fontSize: "0.7em", minWidth: "260px" }}
+                sx={{ padding: "10px", fontSize: "0.7em", minWidth: "300px" }}
             >
                 <Grid
                     container

@@ -1,9 +1,9 @@
-import React, { useEffect, useContext } from "react";
-import { Grid, Typography } from "@mui/material";
+import React, { useContext } from "react";
+import { Grid, Typography, Button } from "@mui/material";
 import { RootContext } from "../../RootContext";
 import { MatchType } from "../../model/MatchType";
 import TabPanel from "@mui/lab/TabPanel";
-import { MatchInfo, PlayerType } from "../../model/MatchDetail";
+import { MatchInfo } from "../../model/MatchDetail";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -11,34 +11,49 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import moment from "moment";
 import PlayerDetailInfo from "./PlayerDetailInfo";
 import MatchInfoDetail from "./MatchInfoDetail";
-import UserInfo from "./UserInfo";
+import MatchInfoShootPosition from "./MatchInfoShootPosition";
+import { CircularProgress } from "@mui/material";
 
 function MatchRecordPageContent() {
     const {
-        matchTypeList,
+        isOffLoading,
+        offset,
+        userInfo,
         matchType,
-        setType,
-        isLoading,
-        fetchMatchInfoByType,
+        matchTypeList,
         matchDetailList,
-        spIdList,
+        fetchMatchInfoByTypeMore,
+        setPageOffset,
     } = useContext(RootContext);
 
     const renderContainer = (result: string) => {
         if (result === "무") {
-            return { background: "lightgray" };
+            return {
+                background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+            };
         } else if (result === "패") {
-            return { background: "pink" };
+            return {
+                background: "linear-gradient(45deg, #ee9ca7 0%, #ffdde1 100%)",
+            };
         }
-        return { background: "skyblue" };
+        return {
+            background: "linear-gradient(to right, #4facfe 0%, #00f2fe 100%)",
+        };
     };
 
-    return (
+    const handleClickMoreData = () => {
+        setPageOffset((offset + 1) * 10);
+        fetchMatchInfoByTypeMore(userInfo, matchType);
+    };
+
+    return matchDetailList.length === 0 ? (
+        <Typography>전적이 없습니다.</Typography>
+    ) : (
         <>
-            {matchTypeList.map((li: MatchType) => {
+            {matchTypeList?.map((li: MatchType) => {
                 return (
                     <TabPanel key={li.matchtype} value={`${li.matchtype}`}>
-                        {matchDetailList.map((li: MatchInfo) => {
+                        {matchDetailList?.map((li: MatchInfo) => {
                             return (
                                 <Accordion
                                     key={li.matchId}
@@ -80,8 +95,10 @@ function MatchRecordPageContent() {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Grid container gap={1}>
-                                            <UserInfo matchInfo={li} />
                                             <MatchInfoDetail matchInfo={li} />
+                                            <MatchInfoShootPosition
+                                                matchInfo={li}
+                                            />
                                             <PlayerDetailInfo matchInfo={li} />
                                         </Grid>
                                     </AccordionDetails>
@@ -91,6 +108,13 @@ function MatchRecordPageContent() {
                     </TabPanel>
                 );
             })}
+            {isOffLoading ? (
+                <CircularProgress />
+            ) : (
+                <Button variant="contained" onClick={handleClickMoreData}>
+                    더보기
+                </Button>
+            )}
         </>
     );
 }

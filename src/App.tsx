@@ -1,4 +1,3 @@
-import React, { createContext } from "react";
 import "./App.css";
 import HomePage from "./HomePage/HomPage";
 import { Routes, Route } from "react-router-dom";
@@ -10,7 +9,7 @@ function App() {
         <RootProvider>
             <Routes>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/:username" element={<MatchRecordPage />} />
+                <Route path="/total" element={<MatchRecordPage />} />
             </Routes>
         </RootProvider>
     );

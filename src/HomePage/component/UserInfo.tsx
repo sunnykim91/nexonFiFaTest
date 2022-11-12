@@ -1,31 +1,30 @@
-import React, { useEffect, useContext } from "react";
-import { Grid, Paper, Typography, Box } from "@mui/material";
-import { MatchInfo, PlayerType } from "../../model/MatchDetail";
+import { useContext } from "react";
+import { Grid, Paper } from "@mui/material";
 import { RootContext } from "../../RootContext";
 import moment from "moment";
 
-interface Props {
-    matchInfo: MatchInfo;
-}
-
-function UserInfo(props: Props) {
-    const { matchInfo } = props;
+function UserInfo() {
     const { userInfo } = useContext(RootContext);
 
     return (
         <Grid>
             <Paper
-                sx={{ padding: "10px", fontSize: "0.7em", minWidth: "260px" }}
+                sx={{
+                    padding: "10px",
+                    fontSize: "0.9em",
+                    color: "#2E3C7E",
+                    background: "#FBEAEB",
+                }}
             >
                 <Grid
                     container
                     sx={{ fontSize: "1.2em" }}
-                    direction={"column"}
                     textAlign="left"
-                    gap={2}
+                    gap={3}
                 >
                     <Grid>닉네임 : {userInfo.nickname}</Grid>
                     <Grid>레벨 : {userInfo.level}</Grid>
+
                     <Grid>공식경기 클래스 : {userInfo.divisionName}</Grid>
                     <Grid>
                         클래스 달성일자 :{" "}

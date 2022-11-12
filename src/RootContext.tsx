@@ -2,7 +2,6 @@ import { createContext, useState } from "react";
 import { MatchInfo, PlayerType } from "./model/MatchDetail";
 import { MatchType } from "./model/MatchType";
 import NEXONAPI from "./NEXONAPI";
-import { useNavigate } from "react-router-dom";
 import { SPID } from "./model/SPID";
 import { SpPositionType } from "./model/SpPositionType";
 import { UserInfo } from "./model/UserInfo";
@@ -12,20 +11,24 @@ import { DivisionData } from "./model/DivisionData";
 const RootContext = createContext({
     username: "",
     matchType: "",
+    offset: 0,
     userInfo: {} as UserInfo,
     spIdList: [] as SPID[],
     spPositionList: [] as SpPositionType[],
     isLoading: false,
+    isOffLoading: false,
     matchTypeList: [] as MatchType[],
     matchDetailList: [] as MatchInfo[],
     fetchMatchTypes: () => {},
     fetchSpId: () => {},
     fetchSpPosition: () => {},
     fetchDivision: () => {},
-    fetchUserMatchInfo: () => {},
-    fetchMatchInfoByType: (matchType: string) => {},
+    fetchUserMatchInfo: (username: string) => {},
+    fetchMatchInfoByType: (userInfo: UserInfo, matchType: string) => {},
+    fetchMatchInfoByTypeMore: (userInfo: UserInfo, matchType: string) => {},
     setType: (matchType: string) => {},
-    setName: (username: string) => {},
+    setPageOffset: (offset: number) => {},
+    setUserName: (username: string) => {},
     setMatchInfoList: (list: MatchInfo[]) => {},
 });
 
@@ -34,16 +37,18 @@ interface Props {
 }
 
 const RootProvider = ({ children }: Props): JSX.Element => {
-    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
-    const [accessId, setAccessId] = useState("");
-    const [username, setUserName] = useState<string>("");
+    const [isOffLoading, setIsOffLoading] = useState(false);
+    const [offset, setOffset] = useState(0);
+    const [username, setUserNameState] = useState<string>("");
     const [userInfo, setUserInfo] = useState<UserInfo>({
         accessId: "",
         level: 0,
         nickname: "",
+        divisionName: "",
+        achievementDate: "",
     });
-    const [matchType, setMatchType] = useState<string>("30");
+    const [matchType, setMatchType] = useState<string>("50");
     const [spIdList, setSpIdList] = useState<SPID[]>([]);
     const [spPositionList, setSpPositionList] = useState<SpPositionType[]>([]);
     const [divisionList, setDivisionList] = useState<DivisionData[]>([]);
@@ -52,7 +57,11 @@ const RootProvider = ({ children }: Props): JSX.Element => {
 
     const fetchMatchTypes = async () => {
         try {
-            const res = await NEXONAPI.fetchMatchTypes();
+            let res = await NEXONAPI.fetchMatchTypes();
+            res = res.filter(
+                (matchType: MatchType) =>
+                    matchType.matchtype === 50 || matchType.matchtype === 52
+            );
             setMatchTypeList(res);
         } catch (err) {
             console.log(err);
@@ -62,7 +71,6 @@ const RootProvider = ({ children }: Props): JSX.Element => {
     const fetchSpId = async () => {
         try {
             const res = await NEXONAPI.fetchSpId();
-            console.log(res);
             setSpIdList(res);
         } catch (err) {
             console.log(err);
@@ -72,7 +80,6 @@ const RootProvider = ({ children }: Props): JSX.Element => {
     const fetchSpPosition = async () => {
         try {
             const res = await NEXONAPI.fetchSpPosition();
-            console.log(res);
             setSpPositionList(res);
         } catch (err) {
             console.log(err);
@@ -82,18 +89,18 @@ const RootProvider = ({ children }: Props): JSX.Element => {
     const fetchDivision = async () => {
         try {
             const res = await NEXONAPI.fetchDivision();
-            console.log(res);
             setDivisionList(res);
         } catch (err) {
             console.log(err);
         }
     };
 
-    const fetchUserMatchInfo = async () => {
+    const fetchUserMatchInfo = async (name: string) => {
         try {
-            const userRes = await NEXONAPI.fetchUserInfo(username);
+            setIsLoading(true);
+
+            const userRes = await NEXONAPI.fetchUserInfo(name);
             let accessId = userRes.accessId;
-            setAccessId(accessId);
 
             const divRes = await NEXONAPI.fetchUserDivision(accessId);
 
@@ -109,45 +116,42 @@ const RootProvider = ({ children }: Props): JSX.Element => {
             });
 
             setUserInfo(userRes);
-            const recordRes = await NEXONAPI.fetchMatchRecord(
-                accessId,
-                Number(matchType),
-                { limit: 10 }
-            );
-            let tempList: any = [];
-            for (let i = 0; i < recordRes.length; i++) {
-                let matchInfo = await NEXONAPI.fetchMatchRecordDetail(
-                    recordRes[i]
-                );
-                console.log(matchInfo);
 
-                tempList.push(matchInfo);
-            }
-
-            setMatchDetailList(tempList);
+            fetchMatchInfoByType(userRes, matchType);
         } catch (err: any) {
-            console.log(err.response.data.message);
-        } finally {
-            navigate(`/${username}`);
+            console.log(err);
+            if (err?.response?.data?.message === "User could not found") {
+                setUserInfo({
+                    accessId: "",
+                    level: 0,
+                    nickname: "",
+                    divisionName: "",
+                    achievementDate: "",
+                });
+                setMatchDetailList([]);
+            }
         }
     };
 
-    const fetchMatchInfoByType = async (matchType: string) => {
+    const fetchMatchInfoByType = async (
+        userInfo: UserInfo,
+        matchType: string
+    ) => {
         try {
             setIsLoading(true);
             const recordRes = await NEXONAPI.fetchMatchRecord(
-                accessId,
+                userInfo.accessId,
                 Number(matchType),
-                { limit: 10 }
+                { offset: 0, limit: 10 }
             );
+
             let tempList: any = [];
             for (let i = 0; i < recordRes.length; i++) {
                 let matchInfo = await NEXONAPI.fetchMatchRecordDetail(
                     recordRes[i]
                 );
-                console.log(matchInfo);
                 matchInfo.matchInfo.sort((a: any, b: any) => {
-                    return a.nickname === username ? -1 : 0;
+                    return a.nickname === userInfo.nickname ? -1 : 0;
                 });
 
                 spIdList.map((li: SPID) => {
@@ -199,22 +203,120 @@ const RootProvider = ({ children }: Props): JSX.Element => {
                         (play: PlayerType) => play.desc !== "SUB"
                     );
 
-                console.log(matchInfo.matchInfo[0].player);
                 tempList.push(matchInfo);
             }
 
             setMatchDetailList(tempList);
         } catch (err: any) {
-            setIsLoading(false);
-            console.log(err.response.data.message);
+            console.log(err);
+            if (err?.response?.data?.message === "User could not found") {
+                setUserInfo({
+                    accessId: "",
+                    level: 0,
+                    nickname: "",
+                    divisionName: "",
+                    achievementDate: "",
+                });
+                setMatchDetailList([]);
+            }
         } finally {
             setIsLoading(false);
-            navigate(`/${username}`);
         }
     };
 
-    const setName = (username: string) => {
-        setUserName(username);
+    const fetchMatchInfoByTypeMore = async (
+        userInfo: UserInfo,
+        matchType: string
+    ) => {
+        try {
+            setIsOffLoading(true);
+            const recordRes = await NEXONAPI.fetchMatchRecord(
+                userInfo.accessId,
+                Number(matchType),
+                { offset: (offset + 1) * 10, limit: 10 }
+            );
+
+            let tempList: any = [];
+            for (let i = 0; i < recordRes.length; i++) {
+                let matchInfo = await NEXONAPI.fetchMatchRecordDetail(
+                    recordRes[i]
+                );
+                matchInfo.matchInfo.sort((a: any, b: any) => {
+                    return a.nickname === userInfo.nickname ? -1 : 0;
+                });
+
+                spIdList.map((li: SPID) => {
+                    return matchInfo.matchInfo[0].player.map(
+                        (play: PlayerType) => {
+                            if (li.id === play.spId) {
+                                play.name = li.name;
+                            }
+                        }
+                    );
+                });
+
+                spIdList.map((li: SPID) => {
+                    return matchInfo.matchInfo[1].player.map(
+                        (play: PlayerType) => {
+                            if (li.id === play.spId) {
+                                play.name = li.name;
+                            }
+                        }
+                    );
+                });
+
+                spPositionList.map((li: SpPositionType) => {
+                    return matchInfo.matchInfo[0].player.map(
+                        (play: PlayerType) => {
+                            if (li.spposition === play.spPosition) {
+                                play.desc = li.desc;
+                            }
+                        }
+                    );
+                });
+
+                spPositionList.map((li: SpPositionType) => {
+                    return matchInfo.matchInfo[1].player.map(
+                        (play: PlayerType) => {
+                            if (li.spposition === play.spPosition) {
+                                play.desc = li.desc;
+                            }
+                        }
+                    );
+                });
+
+                matchInfo.matchInfo[0].player =
+                    matchInfo.matchInfo[0].player.filter(
+                        (play: PlayerType) => play.desc !== "SUB"
+                    );
+                matchInfo.matchInfo[1].player =
+                    matchInfo.matchInfo[1].player.filter(
+                        (play: PlayerType) => play.desc !== "SUB"
+                    );
+
+                tempList.push(matchInfo);
+            }
+
+            setMatchDetailList([...matchDetailList, ...tempList]);
+        } catch (err: any) {
+            console.log(err);
+            if (err?.response?.data?.message === "User could not found") {
+                setUserInfo({
+                    accessId: "",
+                    level: 0,
+                    nickname: "",
+                    divisionName: "",
+                    achievementDate: "",
+                });
+                setMatchDetailList([]);
+            }
+        } finally {
+            setIsOffLoading(false);
+        }
+    };
+
+    const setUserName = (username: string) => {
+        setUserNameState(username);
     };
 
     const setMatchInfoList = (list: MatchInfo[]) => {
@@ -225,15 +327,21 @@ const RootProvider = ({ children }: Props): JSX.Element => {
         setMatchType(matchType);
     };
 
+    const setPageOffset = (pageOffset: number) => {
+        setOffset(pageOffset);
+    };
+
     return (
         <RootContext.Provider
             value={{
+                offset,
                 username,
                 spIdList,
                 spPositionList,
                 matchType,
                 userInfo,
                 isLoading,
+                isOffLoading,
                 matchTypeList,
                 matchDetailList,
                 fetchSpId,
@@ -242,8 +350,10 @@ const RootProvider = ({ children }: Props): JSX.Element => {
                 fetchDivision,
                 fetchUserMatchInfo,
                 fetchMatchInfoByType,
-                setName,
+                fetchMatchInfoByTypeMore,
+                setUserName,
                 setType,
+                setPageOffset,
                 setMatchInfoList,
             }}
         >

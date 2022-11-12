@@ -1,24 +1,29 @@
-import React, { useEffect, useContext } from "react";
-import { Box, Grid, Typography } from "@mui/material";
-import { RootContext } from "../RootContext";
+import { useContext } from "react";
+import { Grid, Typography } from "@mui/material";
 import MatchRecordPageTabs from "../HomePage/component/MatchRecordPageTabs";
+import UserInfo from "../HomePage/component/UserInfo";
+import TopHeader from "../HomePage/component/TopHeader";
+import { RootContext } from "../RootContext";
 
 function MatchRecordPage() {
-    const {
-        matchTypeList,
-        matchType,
-        setType,
-        isLoading,
-        fetchMatchInfoByType,
-        matchDetailList,
-        spIdList,
-    } = useContext(RootContext);
-
+    const { userInfo } = useContext(RootContext);
     return (
-        <Grid container height={"100%"}>
-            <Grid container>헤더 및 검색 영역</Grid>
-            <Grid container>여기가 선수 정보 영역</Grid>
-            <MatchRecordPageTabs />
+        <Grid
+            container
+            height={"100%"}
+            style={{ padding: "10px" }}
+            justifyContent={"center"}
+            gap={2}
+        >
+            <TopHeader />
+            {userInfo.nickname ? (
+                <>
+                    <UserInfo />
+                    <MatchRecordPageTabs />
+                </>
+            ) : (
+                <Typography>구단주 정보가 없습니다.</Typography>
+            )}
         </Grid>
     );
 }

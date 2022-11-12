@@ -1,27 +1,20 @@
 import React, { useEffect, useContext } from "react";
 import { Button, Grid, Input, Typography } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import NEXONAPI from "../NEXONAPI";
-import { MatchType } from "../model/MatchType";
-import moment from "moment";
-import { MatchInfo } from "../model/MatchDetail";
 import BackGroundIMG from "../assets/background.jpg";
 import { useNavigate } from "react-router-dom";
 import { RootContext } from "../RootContext";
 
 function HomePage() {
+    const navigate = useNavigate();
     const {
-        username,
-        matchType,
-        setName,
         fetchMatchTypes,
-        setMatchInfoList,
         fetchSpId,
         fetchSpPosition,
         fetchDivision,
         fetchUserMatchInfo,
+        setUserName,
     } = useContext(RootContext);
+    const [name, setName] = React.useState<string>("");
 
     useEffect(() => {
         fetchMatchTypes();
@@ -34,8 +27,30 @@ function HomePage() {
         setName(e.target.value);
     };
 
+    const handleKeyDownNickname = (
+        e: React.KeyboardEvent<HTMLInputElement>
+    ) => {
+        if (e.code === "NumpadEnter" || e.code === "Enter") {
+            if (name === "") {
+                alert("구단주 명을 입력해주세요");
+                return;
+            }
+            setName("");
+            setUserName(name);
+            fetchUserMatchInfo(name);
+            navigate(`total`);
+        }
+    };
+
     const handleClickSearch = async () => {
-        fetchUserMatchInfo();
+        if (name === "") {
+            alert("구단주 명을 입력해주세요");
+            return;
+        }
+        setName("");
+        setUserName(name);
+        fetchUserMatchInfo(name);
+        navigate(`total`);
     };
 
     return (
@@ -58,7 +73,8 @@ function HomePage() {
                     <Typography variant="subtitle1">구단주명</Typography>
                     <Input
                         placeholder="구단주 이름을 입력해주세요"
-                        value={username}
+                        value={name}
+                        onKeyDown={handleKeyDownNickname}
                         onChange={handleChangeNickname}
                         style={{ minWidth: "240px" }}
                     />
