@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.073c9b0a.css",
-    "main.js": "/static/js/main.0febcbaf.js",
-    "static/js/787.42d2b002.chunk.js": "/static/js/787.42d2b002.chunk.js",
-    "static/media/redball.png": "/static/media/redball.d6f70c7612382c54049d.png",
-    "static/media/ball.png": "/static/media/ball.419efcd9cf5a93735981.png",
-    "static/media/background.jpg": "/static/media/background.8b3c6f571d72efc7660f.jpg",
-    "static/media/stadium.jpg": "/static/media/stadium.9b5233f225fe3fae777b.jpg",
-    "index.html": "/index.html",
-    "main.073c9b0a.css.map": "/static/css/main.073c9b0a.css.map",
-    "main.0febcbaf.js.map": "/static/js/main.0febcbaf.js.map",
-    "787.42d2b002.chunk.js.map": "/static/js/787.42d2b002.chunk.js.map"
+    "main.css": "/nexonFiFaTest/static/css/main.073c9b0a.css",
+    "main.js": "/nexonFiFaTest/static/js/main.382012bd.js",
+    "static/js/787.42d2b002.chunk.js": "/nexonFiFaTest/static/js/787.42d2b002.chunk.js",
+    "static/media/redball.png": "/nexonFiFaTest/static/media/redball.d6f70c7612382c54049d.png",
+    "static/media/ball.png": "/nexonFiFaTest/static/media/ball.419efcd9cf5a93735981.png",
+    "static/media/background.jpg": "/nexonFiFaTest/static/media/background.8b3c6f571d72efc7660f.jpg",
+    "static/media/stadium.jpg": "/nexonFiFaTest/static/media/stadium.9b5233f225fe3fae777b.jpg",
+    "index.html": "/nexonFiFaTest/index.html",
+    "main.073c9b0a.css.map": "/nexonFiFaTest/static/css/main.073c9b0a.css.map",
+    "main.382012bd.js.map": "/nexonFiFaTest/static/js/main.382012bd.js.map",
+    "787.42d2b002.chunk.js.map": "/nexonFiFaTest/static/js/787.42d2b002.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.0febcbaf.js"
+    "static/js/main.382012bd.js"
   ]
 }
