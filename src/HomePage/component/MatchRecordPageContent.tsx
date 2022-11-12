@@ -94,7 +94,11 @@ function MatchRecordPageContent() {
                                         </Grid>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Grid container gap={1}>
+                                        <Grid
+                                            container
+                                            justifyContent={"space-around"}
+                                            gap={2}
+                                        >
                                             <MatchInfoDetail matchInfo={li} />
                                             <MatchInfoShootPosition
                                                 matchInfo={li}

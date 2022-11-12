@@ -1,123 +1,190 @@
-import { Grid, Paper } from "@mui/material";
+import {
+    Grid,
+    Paper,
+    TableContainer,
+    Table,
+    TableBody,
+    TableHead,
+    TableRow,
+    TableCell,
+} from "@mui/material";
+import { tableCellClasses } from "@mui/material/TableCell";
 import { MatchInfo } from "../../model/MatchDetail";
+import { styled } from "@mui/material/styles";
 
 interface Props {
     matchInfo: MatchInfo;
 }
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        borderBottom: "1px solid black",
+        color: theme.palette.common.black,
+        fontSize: "0.3em",
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: "0.2em",
+    },
+}));
+
 function MatchInfoDetail(props: Props) {
     const { matchInfo } = props;
     return (
-        <Grid>
-            <Paper
-                sx={{ padding: "10px", fontSize: "0.7em", minWidth: "300px" }}
-            >
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent={"space-around"}
-                    sx={{ fontSize: "1.2em" }}
-                >
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[0].nickname}
-                    </Grid>
-                    <Grid item xs={4}>
-                        vs
-                    </Grid>
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[1].nickname}
-                    </Grid>
-                </Grid>
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent={"space-around"}
-                >
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[0].matchDetail.possession}%
-                    </Grid>
-                    <Grid item xs={4}>
-                        볼점유율
-                    </Grid>
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[1].matchDetail.possession}%
-                    </Grid>
-                </Grid>
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent={"space-around"}
-                >
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[0].shoot.effectiveShootTotal}
-                    </Grid>
-                    <Grid item xs={4}>
-                        유효슈팅
-                    </Grid>
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[1].shoot.effectiveShootTotal}
-                    </Grid>
-                </Grid>
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent={"space-around"}
-                >
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[0].matchDetail.cornerKick}
-                    </Grid>
-                    <Grid item xs={4}>
-                        코너킥
-                    </Grid>
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[1].matchDetail.cornerKick}
-                    </Grid>
-                </Grid>
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent={"space-around"}
-                >
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[0].matchDetail.offsideCount}
-                    </Grid>
-                    <Grid item xs={4}>
-                        오프사이드
-                    </Grid>
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[1].matchDetail.offsideCount}
-                    </Grid>
-                </Grid>
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent={"space-around"}
-                >
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[0].matchDetail.foul}
-                    </Grid>
-                    <Grid item xs={4}>
-                        파울
-                    </Grid>
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[1].matchDetail.foul}
-                    </Grid>
-                </Grid>
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent={"space-around"}
-                >
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[0].matchDetail.redCards}
-                    </Grid>
-                    <Grid item xs={4}>
-                        퇴장
-                    </Grid>
-                    <Grid item xs={4}>
-                        {matchInfo.matchInfo[1].matchDetail.redCards}
-                    </Grid>
-                </Grid>
+        <Grid item>
+            <Paper sx={{ padding: 1, fontSize: "0.7em", width: "100%" }}>
+                <TableContainer component={Table}>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell align="center">
+                                    {matchInfo.matchInfo[0].nickname}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    vs
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    {matchInfo.matchInfo[1].nickname}
+                                </StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow
+                                sx={{
+                                    "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                    },
+                                }}
+                            >
+                                <StyledTableCell align="center">
+                                    {
+                                        matchInfo.matchInfo[0].matchDetail
+                                            .possession
+                                    }
+                                    %
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    볼점유율
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    {
+                                        matchInfo.matchInfo[1].matchDetail
+                                            .possession
+                                    }
+                                    %
+                                </StyledTableCell>
+                            </TableRow>
+                            <TableRow
+                                sx={{
+                                    "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                    },
+                                }}
+                            >
+                                <StyledTableCell align="center">
+                                    {
+                                        matchInfo.matchInfo[0].shoot
+                                            .effectiveShootTotal
+                                    }
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    유효슈팅
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    {
+                                        matchInfo.matchInfo[1].shoot
+                                            .effectiveShootTotal
+                                    }
+                                </StyledTableCell>
+                            </TableRow>
+                            <TableRow
+                                sx={{
+                                    "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                    },
+                                }}
+                            >
+                                <StyledTableCell align="center">
+                                    {
+                                        matchInfo.matchInfo[0].matchDetail
+                                            .cornerKick
+                                    }
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    코너킥
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    {
+                                        matchInfo.matchInfo[1].matchDetail
+                                            .cornerKick
+                                    }
+                                </StyledTableCell>
+                            </TableRow>
+                            <TableRow
+                                sx={{
+                                    "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                    },
+                                }}
+                            >
+                                <StyledTableCell align="center">
+                                    {
+                                        matchInfo.matchInfo[0].matchDetail
+                                            .offsideCount
+                                    }
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    오프사이드
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    {
+                                        matchInfo.matchInfo[1].matchDetail
+                                            .offsideCount
+                                    }
+                                </StyledTableCell>
+                            </TableRow>
+                            <TableRow
+                                sx={{
+                                    "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                    },
+                                }}
+                            >
+                                <StyledTableCell align="center">
+                                    {matchInfo.matchInfo[0].matchDetail.foul}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    파울
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    {matchInfo.matchInfo[1].matchDetail.foul}
+                                </StyledTableCell>
+                            </TableRow>
+                            <TableRow
+                                sx={{
+                                    "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                    },
+                                }}
+                            >
+                                <StyledTableCell align="center">
+                                    {
+                                        matchInfo.matchInfo[0].matchDetail
+                                            .redCards
+                                    }
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    퇴장
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    {
+                                        matchInfo.matchInfo[1].matchDetail
+                                            .redCards
+                                    }
+                                </StyledTableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Paper>
         </Grid>
     );

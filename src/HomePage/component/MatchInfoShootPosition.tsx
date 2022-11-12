@@ -1,4 +1,4 @@
-import { Grid, Paper } from "@mui/material";
+import { Grid, Paper, Typography } from "@mui/material";
 import { MatchInfo, ShootDetail } from "../../model/MatchDetail";
 import stadium from "../../assets/stadium.jpg";
 import ball from "../../assets/ball.png";
@@ -45,25 +45,12 @@ function MatchInfoShootPosition(props: Props) {
     };
 
     return (
-        <Grid>
-            <Paper sx={{ fontSize: "0.7em" }}>
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent={"space-around"}
-                    sx={{ fontSize: "1.2em" }}
-                >
-                    <div style={{ position: "relative" }}>
-                        <img
-                            src={stadium}
-                            width="220px"
-                            height="150px"
-                            alt="stadium"
-                        />
-                        {renderGoal(matchInfo.matchInfo[0].shootDetail)}
-                        {renderGoal(matchInfo.matchInfo[1].shootDetail, true)}
-                    </div>
-                </Grid>
+        <Grid item>
+            <Typography>득점 위치</Typography>
+            <Paper style={{ position: "relative", padding: "5px" }}>
+                <img src={stadium} width="220px" height="150px" alt="stadium" />
+                {renderGoal(matchInfo.matchInfo[0].shootDetail)}
+                {renderGoal(matchInfo.matchInfo[1].shootDetail, true)}
             </Paper>
         </Grid>
     );
