@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { Grid, Typography } from "@mui/material";
-import MatchRecordPageTabs from "../HomePage/component/MatchRecordPageTabs";
-import UserInfo from "../HomePage/component/UserInfo";
-import TopHeader from "../HomePage/component/TopHeader";
+import MatchRecordPageTabs from "./component/MatchRecordPageTabs";
+import UserInfo from "./component/UserInfo";
+import TopHeader from "./component/TopHeader";
 import { RootContext } from "../RootContext";
 
 function MatchRecordPage() {

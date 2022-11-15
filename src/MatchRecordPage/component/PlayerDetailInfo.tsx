@@ -36,10 +36,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         borderBottom: "2px solid black",
         color: theme.palette.common.black,
-        fontSize: "0.3em",
+        fontSize: "1.2em",
     },
     [`&.${tableCellClasses.body}`]: {
-        fontSize: "0.2em",
+        fontSize: "1em",
     },
 }));
 
