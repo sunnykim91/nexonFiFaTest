@@ -20,10 +20,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         borderBottom: "1px solid black",
         color: theme.palette.common.black,
-        fontSize: "0.3em",
+        fontSize: "1em",
     },
     [`&.${tableCellClasses.body}`]: {
-        fontSize: "0.2em",
+        fontSize: "0.8em",
     },
 }));
 
@@ -31,7 +31,7 @@ function MatchInfoDetail(props: Props) {
     const { matchInfo } = props;
     return (
         <Grid item>
-            <Paper sx={{ padding: 1, fontSize: "0.7em", width: "100%" }}>
+            <Paper sx={{ padding: 1, width: "100%" }}>
                 <TableContainer component={Table}>
                     <Table size="small">
                         <TableHead>
